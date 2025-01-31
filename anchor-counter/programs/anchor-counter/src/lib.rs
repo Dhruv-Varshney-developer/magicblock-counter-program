@@ -3,7 +3,7 @@ use ephemeral_rollups_sdk::anchor::{commit, delegate, ephemeral};
 use ephemeral_rollups_sdk::cpi::DelegateConfig;
 use ephemeral_rollups_sdk::ephem::{commit_accounts, commit_and_undelegate_accounts};
 
-declare_id!("852a53jomx7dGmkpbFPGXNJymRxywo3WsH1vusNASJRr");
+declare_id!("zqXuMMnW2vZtczgstTAEKF7mnuDhvBM5qDhsoreD43s"); //1. anchor build 2. solana-keygen pubkey target/deploy/anchor_counter-keypair.json
 
 pub const TEST_PDA_SEED: &[u8] = b"test-pda";
 
@@ -28,6 +28,14 @@ pub mod anchor_counter {
         }
         Ok(())
     }
+
+    /// Multiply the counter value by 2.
+    pub fn multiply(ctx: Context<Multiply>) -> Result<()> {
+        let counter = &mut ctx.accounts.counter;
+        counter.count *= 2;
+        Ok(())
+    }
+
 
     /// Delegate the account to the delegation program
     pub fn delegate(ctx: Context<DelegateInput>) -> Result<()> {
@@ -65,7 +73,7 @@ pub mod anchor_counter {
         Ok(())
     }
 
-    /// Increment the counter + manual commit the account in the ER.
+    /// Increment and undelegate the account.
     pub fn increment_and_undelegate(ctx: Context<IncrementAndCommit>) -> Result<()> {
         let counter = &mut ctx.accounts.counter;
         counter.count += 1;
@@ -102,6 +110,12 @@ pub struct DelegateInput<'info> {
 /// Account for the increment instruction.
 #[derive(Accounts)]
 pub struct Increment<'info> {
+    #[account(mut, seeds = [TEST_PDA_SEED], bump)]
+    pub counter: Account<'info, Counter>,
+}
+
+#[derive(Accounts)]
+pub struct Multiply<'info> {
     #[account(mut, seeds = [TEST_PDA_SEED], bump)]
     pub counter: Account<'info, Counter>,
 }
