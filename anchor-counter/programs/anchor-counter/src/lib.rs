@@ -33,6 +33,9 @@ pub mod anchor_counter {
     pub fn multiply(ctx: Context<Multiply>) -> Result<()> {
         let counter = &mut ctx.accounts.counter;
         counter.count *= 2;
+        if counter.count > 1000 {
+            counter.count = 1;
+        }
         Ok(())
     }
 
