@@ -11,4 +11,4 @@
 !/bolt-counter/target/deploy/counter-keypair.json
 !/bolt-counter/target/deploy/increase-keypair.json
 **/.env
-
+!/anchor-counter/target/deploy/anchor_counter-keypair.json
